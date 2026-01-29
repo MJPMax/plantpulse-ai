@@ -135,20 +135,6 @@ export default function AnomalyDetail() {
         </CardContent>
       </Card>
 
-      {/* Key drivers */}
-      <Typography variant="subtitle2" sx={{ mb: 0.5 }}>Key Drivers</Typography>
-      <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap', gap: 0.5 }}>
-        {anomaly.drivers.map((d) => {
-          const met = store.metrics.find((m) => m.id === d.metricId);
-          return (
-            <Chip key={d.metricId}
-              label={`${met?.name ?? d.metricId} ${d.direction === 'up' ? '↑' : d.direction === 'down' ? '↓' : '~'} — ${d.note}`}
-              size="small" variant="outlined" onClick={() => navigate(`/metrics/${d.metricId}`)}
-              sx={{ cursor: 'pointer' }} />
-          );
-        })}
-      </Stack>
-
       {/* Trend */}
       {relatedMetrics.length > 0 && (
         <Card sx={{ mb: 2, p: 2 }}>

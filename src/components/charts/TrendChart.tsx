@@ -1,4 +1,4 @@
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceArea, ReferenceLine } from 'recharts';
+import { ResponsiveContainer, LineChart, Line, Area, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceArea, ReferenceLine } from 'recharts';
 import { format } from 'date-fns';
 import { Box, Typography } from '@mui/material';
 
@@ -47,9 +47,10 @@ export default function TrendChart({ series, height = 260, normalRange, anomalyB
             <ReferenceLine key={`ref-${i}`} yAxisId="left" y={rl.value} stroke={rl.color} strokeDasharray={rl.dashed ? '6 3' : undefined} strokeWidth={1.2}
               label={{ value: rl.label, position: 'right', fill: rl.color, fontSize: 10 }} />
           ))}
-          {/* Background plant rate line — light/transparent */}
+          {/* Background plant rate — filled area */}
           {backgroundSeries && (
-            <Line yAxisId="right" dataKey={backgroundSeries.name} stroke="#B0ADA8" dot={false} strokeWidth={1} strokeOpacity={0.35} />
+            <Area yAxisId="right" dataKey={backgroundSeries.name} stroke="#B0ADA8" strokeWidth={0.8} strokeOpacity={0.5}
+              fill="#C4C0BA" fillOpacity={0.15} dot={false} />
           )}
           {series.map((s) => (
             <Line key={s.name} yAxisId="left" dataKey={s.name} stroke={s.color} dot={false} strokeWidth={1.5} />
