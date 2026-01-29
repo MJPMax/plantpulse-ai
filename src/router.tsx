@@ -1,0 +1,21 @@
+import { createBrowserRouter } from 'react-router-dom';
+import App from './App';
+import Overview from './pages/Overview';
+import Anomalies from './pages/Anomalies';
+import AnomalyDetail from './pages/AnomalyDetail';
+import MetricDetail from './pages/MetricDetail';
+import Actions from './pages/Actions';
+
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />,
+    children: [
+      { index: true, element: <Overview /> },
+      { path: 'anomalies', element: <Anomalies /> },
+      { path: 'anomalies/:id', element: <AnomalyDetail /> },
+      { path: 'metrics/:id', element: <MetricDetail /> },
+      { path: 'actions', element: <Actions /> },
+    ],
+  },
+]);
