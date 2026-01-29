@@ -1,4 +1,4 @@
-import { ResponsiveContainer, LineChart, Line, Area, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceArea, ReferenceLine } from 'recharts';
+import { ResponsiveContainer, ComposedChart, Line, Area, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceArea, ReferenceLine } from 'recharts';
 import { format } from 'date-fns';
 import { Box, Typography } from '@mui/material';
 
@@ -29,7 +29,7 @@ export default function TrendChart({ series, height = 260, normalRange, anomalyB
     <Box>
       {title && <Typography variant="subtitle2" sx={{ mb: 0.5 }}>{title}</Typography>}
       <ResponsiveContainer width="100%" height={height}>
-        <LineChart data={merged} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+        <ComposedChart data={merged} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#D4D1CC" />
           <XAxis dataKey="ts" tickFormatter={(v) => format(new Date(v), 'HH:mm')} tick={{ fontSize: 10, fill: '#8A8A8A' }} />
           <YAxis yAxisId="left" tick={{ fontSize: 10, fill: '#8A8A8A' }} />
@@ -55,7 +55,7 @@ export default function TrendChart({ series, height = 260, normalRange, anomalyB
           {series.map((s) => (
             <Line key={s.name} yAxisId="left" dataKey={s.name} stroke={s.color} dot={false} strokeWidth={1.5} />
           ))}
-        </LineChart>
+        </ComposedChart>
       </ResponsiveContainer>
     </Box>
   );

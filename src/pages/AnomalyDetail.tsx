@@ -135,39 +135,31 @@ export default function AnomalyDetail() {
         </CardContent>
       </Card>
 
-      {/* Trend */}
-      {relatedMetrics.length > 0 && (
-        <Card sx={{ mb: 2, p: 2 }}>
-          <TrendChart
-            series={relatedMetrics.map((m, i) => ({
-              name: m.name, data: m.timeseries, color: ['#42a5f5', '#66bb6a', '#ffa726', '#ef5350'][i % 4],
-            }))}
-            height={200}
-            anomalyBands={[{ start: anomaly.startTime, end: anomaly.endTime ?? Date.now() }]}
-            backgroundSeries={{ name: 'Plant Rate', data: store.metrics.find((m) => m.id === 'met-1')?.timeseries ?? [] }}
-            refLines={relatedMetrics.flatMap((m) => {
-              const lines: { label: string; value: number; color: string; dashed?: boolean }[] = [];
-              lines.push({ label: `Min ${m.normalRange.min}`, value: m.normalRange.min, color: '#C1382E' });
-              lines.push({ label: `Max ${m.normalRange.max}`, value: m.normalRange.max, color: '#C1382E' });
-              if (m.standard != null) lines.push({ label: `Target ${m.standard}`, value: m.standard, color: '#3A7D44', dashed: true });
-              return lines;
-            })}
-          />
-          {/* Min / Max / Target / Out of Range summary */}
-          <Stack direction="row" spacing={2} sx={{ mt: 1, flexWrap: 'wrap', gap: 0.5 }}>
-            {relatedMetrics.map((m) => {
-              const oor = pctOutOfRange(m.timeseries, m.normalRange);
-              return (
-                <Typography key={m.id} variant="caption" sx={{ fontSize: '0.7rem' }}>
-                  <strong>{m.name}:</strong> Min {m.normalRange.min} | Max {m.normalRange.max}
-                  {m.standard != null && ` | Target ${m.standard}`}
-                  {' | '}<span style={{ color: oor > 50 ? '#C1382E' : oor > 0 ? '#C47A20' : '#3A7D44' }}>{oor}% out of range</span>
-                </Typography>
-              );
-            })}
-          </Stack>
-        </Card>
-      )}
+      {/* Trend — primary metric only */}
+      {relatedMetrics.length > 0 && (() => {
+        const pm = relatedMetrics[0];
+        const oor = pctOutOfRange(pm.timeseries, pm.normalRange);
+        return (
+          <Card sx={{ mb: 2, p: 2 }}>
+            <TrendChart
+              series={[{ name: pm.name, data: pm.timeseries, color: '#42a5f5' }]}
+              height={200}
+              anomalyBands={[{ start: anomaly.startTime, end: anomaly.endTime ?? Date.now() }]}
+              backgroundSeries={{ name: 'Plant Rate', data: store.metrics.find((m) => m.id === 'met-1')?.timeseries ?? [] }}
+              refLines={[
+                { label: `Min ${pm.normalRange.min}`, value: pm.normalRange.min, color: '#C1382E' },
+                { label: `Max ${pm.normalRange.max}`, value: pm.normalRange.max, color: '#C1382E' },
+                ...(pm.standard != null ? [{ label: `Target ${pm.standard}`, value: pm.standard, color: '#3A7D44', dashed: true }] : []),
+              ]}
+            />
+            <Typography variant="caption" sx={{ mt: 1, display: 'block', fontSize: '0.7rem' }}>
+              <strong>{pm.name}:</strong> Min {pm.normalRange.min} | Max {pm.normalRange.max}
+              {pm.standard != null && ` | Target ${pm.standard}`}
+              {' | '}<span style={{ color: oor > 50 ? '#C1382E' : oor > 0 ? '#C47A20' : '#3A7D44' }}>{oor}% out of range</span>
+            </Typography>
+          </Card>
+        );
+      })()}
 
       {/* Tabs */}
       <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
