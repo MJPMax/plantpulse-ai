@@ -156,9 +156,9 @@ export default function Overview() {
       <Card sx={{ p: 2 }}>
         <TrendChart
           series={[
-            { name: 'Daily Throughput', data: metrics.find((m) => m.id === 'met-1')?.timeseries ?? [], color: '#42a5f5' },
-            { name: 'White Flake Fat', data: metrics.find((m) => m.id === 'met-2')?.timeseries ?? [], color: '#66bb6a' },
-            { name: 'Hulls Fat', data: metrics.find((m) => m.id === 'met-5')?.timeseries ?? [], color: '#ffa726' },
+            { name: 'DT Dome Temp', data: metrics.find((m) => m.id === 'li-2')?.timeseries ?? [], color: '#C1382E' },
+            { name: 'Solvent Ratio', data: metrics.find((m) => m.id === 'li-8')?.timeseries ?? [], color: '#3670A1' },
+            { name: 'Reboiler Temp', data: metrics.find((m) => m.id === 'li-11')?.timeseries ?? [], color: '#C47A20' },
           ]}
           height={220}
           anomalyBands={facAnomalies.slice(0, 2).map((a) => ({ start: a.startTime, end: a.endTime ?? Date.now() }))}
