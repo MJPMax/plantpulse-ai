@@ -7,14 +7,14 @@ import {
 import { useStore } from '../app/store';
 import SeverityDot from '../components/common/SeverityDot';
 import { AnomalyStatusChip } from '../components/common/StatusChip';
-import { fmtTs, fmtDuration, confirmationsNeeded, healthColor } from '../app/utils';
+import { fmtTs, fmtDuration, confirmationsNeeded, computeHealthScore } from '../app/utils';
 import ConfirmAnomalyDialog from '../components/dialogs/ConfirmAnomalyDialog';
 import AssignActionDrawer from '../components/dialogs/AssignActionDrawer';
 import type { Anomaly, Severity, AnomalyStatus } from '../app/types';
 
 export default function Anomalies() {
   const navigate = useNavigate();
-  const { anomalies, actions, currentFacilityId, users, searchQuery } = useStore();
+  const { anomalies, actions, metrics, currentFacilityId, users, searchQuery } = useStore();
 
   const [sevFilter, setSevFilter] = useState<Severity | 'All'>('All');
   const [statusFilter, setStatusFilter] = useState<AnomalyStatus | 'All'>('All');
@@ -32,8 +32,13 @@ export default function Anomalies() {
       const q = searchQuery.toLowerCase();
       list = list.filter((a) => a.title.toLowerCase().includes(q) || a.id.toLowerCase().includes(q));
     }
-    return list.sort((a, b) => sortByHealth ? a.healthScore - b.healthScore : b.startTime - a.startTime);
-  }, [anomalies, currentFacilityId, sevFilter, statusFilter, needsConfirm, searchQuery, sortByHealth]);
+    const getHealth = (ano: Anomaly) => {
+      const relMets = metrics.filter((m) => ano.relatedMetricIds.includes(m.id));
+      const scores = relMets.map((m) => computeHealthScore(m.timeseries, m.normalRange));
+      return scores.length ? Math.round(scores.reduce((s, v) => s + v, 0) / scores.length) : 0;
+    };
+    return list.sort((a, b) => sortByHealth ? getHealth(a) - getHealth(b) : b.startTime - a.startTime);
+  }, [anomalies, metrics, currentFacilityId, sevFilter, statusFilter, needsConfirm, searchQuery, sortByHealth]);
 
   return (
     <Box>
@@ -99,8 +104,13 @@ export default function Anomalies() {
                   </TableCell>
                   <TableCell><Typography variant="body2" sx={{ fontSize: '0.8rem' }}>{owner?.name ?? '—'}</Typography></TableCell>
                   <TableCell>
-                    <Chip label={`${a.healthScore}%`} size="small"
-                      sx={{ fontSize: '0.7rem', fontWeight: 700, bgcolor: healthColor(a.healthScore), color: '#fff' }} />
+                    {(() => {
+                      const relMets = metrics.filter((m) => a.relatedMetricIds.includes(m.id));
+                      const scores = relMets.map((m) => computeHealthScore(m.timeseries, m.normalRange));
+                      const avg = scores.length ? Math.round(scores.reduce((s, v) => s + v, 0) / scores.length) : 0;
+                      return <Chip label={`${avg}%`} size="small" variant="outlined"
+                        sx={{ fontSize: '0.7rem', fontWeight: 500, color: '#6B6760', borderColor: '#C4C0BA' }} />;
+                    })()}
                   </TableCell>
                   <TableCell><Chip label={`${openActions}/${totalActions}`} size="small" variant="outlined" sx={{ fontSize: '0.7rem' }} /></TableCell>
                   <TableCell>

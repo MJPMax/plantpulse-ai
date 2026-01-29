@@ -5,7 +5,7 @@ import {
 import { OpenInNew as SeeqIcon } from '@mui/icons-material';
 import { ResponsiveContainer, LineChart, Line, ReferenceLine, ReferenceArea } from 'recharts';
 import { useStore } from '../app/store';
-import { fmtTs, fmtDuration, healthColor } from '../app/utils';
+import { fmtTs, fmtDuration, computeHealthScore } from '../app/utils';
 import SeverityDot from '../components/common/SeverityDot';
 import { AnomalyStatusChip } from '../components/common/StatusChip';
 import TrendChart from '../components/charts/TrendChart';
@@ -131,8 +131,13 @@ export default function Overview() {
                   {a.title}
                 </Typography>
                 <AnomalyStatusChip status={a.status} />
-                <Chip label={`Health: ${a.healthScore}%`} size="small"
-                  sx={{ fontSize: '0.65rem', fontWeight: 700, bgcolor: healthColor(a.healthScore), color: '#fff' }} />
+                {(() => {
+                  const relMets = metrics.filter((m) => a.relatedMetricIds.includes(m.id));
+                  const scores = relMets.map((m) => computeHealthScore(m.timeseries, m.normalRange));
+                  const avg = scores.length ? Math.round(scores.reduce((s, v) => s + v, 0) / scores.length) : 0;
+                  return <Chip label={`${avg}% Health`} size="small" variant="outlined"
+                    sx={{ fontSize: '0.65rem', fontWeight: 500, color: '#6B6760', borderColor: '#C4C0BA' }} />;
+                })()}
               </Stack>
               <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.5 }}>
                 <Typography variant="caption" color="text.secondary">{fmtTs(a.startTime)} · {fmtDuration(a.startTime)}</Typography>

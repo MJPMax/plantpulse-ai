@@ -11,7 +11,7 @@ import { useStore } from '../app/store';
 import SeverityDot from '../components/common/SeverityDot';
 import { AnomalyStatusChip } from '../components/common/StatusChip';
 import { ActionStatusChip } from '../components/common/StatusChip';
-import { fmtTs, fmtDuration, confirmationsNeeded, pctOutOfRange, healthColor } from '../app/utils';
+import { fmtTs, fmtDuration, confirmationsNeeded, pctOutOfRange, computeHealthScore } from '../app/utils';
 import TrendChart from '../components/charts/TrendChart';
 import AuditTimeline from '../components/common/AuditTimeline';
 import ConfirmAnomalyDialog from '../components/dialogs/ConfirmAnomalyDialog';
@@ -74,8 +74,12 @@ export default function AnomalyDetail() {
       <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
         <Typography variant="body2" color="text.secondary">{anomaly.id} · {anomaly.area} · {anomaly.asset}</Typography>
         <Chip label={`Confidence: ${(anomaly.confidence * 100).toFixed(0)}%`} size="small" variant="outlined" />
-        <Chip label={`Health: ${anomaly.healthScore}%`} size="small"
-          sx={{ fontWeight: 700, bgcolor: healthColor(anomaly.healthScore), color: '#fff' }} />
+        {(() => {
+          const scores = relatedMetrics.map((m) => computeHealthScore(m.timeseries, m.normalRange));
+          const avg = scores.length ? Math.round(scores.reduce((s, v) => s + v, 0) / scores.length) : 0;
+          return <Chip label={`${avg}% Health`} size="small" variant="outlined"
+            sx={{ fontWeight: 500, color: '#6B6760', borderColor: '#C4C0BA' }} />;
+        })()}
         <Typography variant="body2" color="text.secondary">{fmtTs(anomaly.startTime)} · {fmtDuration(anomaly.startTime)}</Typography>
       </Stack>
 
