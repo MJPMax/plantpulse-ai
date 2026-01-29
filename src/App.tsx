@@ -80,11 +80,6 @@ export default function App() {
           <Typography variant="h6" noWrap sx={{ mr: 1.5, color: 'primary.main', fontWeight: 700, letterSpacing: '-0.02em' }}>
             PlantPulse AI
           </Typography>
-          {/* Cargill Logo */}
-          <Box sx={{ display: 'flex', alignItems: 'center', mr: 2, pl: 1.5, borderLeft: '1px solid', borderColor: 'divider' }}>
-            <Box component="img" src="/cargill-logo.svg" alt="Cargill" sx={{ height: 20, opacity: 0.8 }} />
-          </Box>
-
           {/* Facility */}
           <Select size="small" value={currentFacilityId} onChange={(e) => setFacility(e.target.value as string)}
             sx={{ minWidth: 170, fontSize: '0.8rem' }}>
