@@ -11,7 +11,7 @@ import { useStore } from '../app/store';
 import SeverityDot from '../components/common/SeverityDot';
 import { AnomalyStatusChip } from '../components/common/StatusChip';
 import { ActionStatusChip } from '../components/common/StatusChip';
-import { fmtTs, fmtDuration, confirmationsNeeded } from '../app/utils';
+import { fmtTs, fmtDuration, confirmationsNeeded, pctOutOfRange } from '../app/utils';
 import TrendChart from '../components/charts/TrendChart';
 import AuditTimeline from '../components/common/AuditTimeline';
 import ConfirmAnomalyDialog from '../components/dialogs/ConfirmAnomalyDialog';
@@ -152,7 +152,27 @@ export default function AnomalyDetail() {
             }))}
             height={200}
             anomalyBands={[{ start: anomaly.startTime, end: anomaly.endTime ?? Date.now() }]}
+            refLines={relatedMetrics.flatMap((m) => {
+              const lines: { label: string; value: number; color: string; dashed?: boolean }[] = [];
+              lines.push({ label: `Min ${m.normalRange.min}`, value: m.normalRange.min, color: '#C1382E' });
+              lines.push({ label: `Max ${m.normalRange.max}`, value: m.normalRange.max, color: '#C1382E' });
+              if (m.standard != null) lines.push({ label: `Target ${m.standard}`, value: m.standard, color: '#3A7D44', dashed: true });
+              return lines;
+            })}
           />
+          {/* Min / Max / Target / Out of Range summary */}
+          <Stack direction="row" spacing={2} sx={{ mt: 1, flexWrap: 'wrap', gap: 0.5 }}>
+            {relatedMetrics.map((m) => {
+              const oor = pctOutOfRange(m.timeseries, m.normalRange);
+              return (
+                <Typography key={m.id} variant="caption" sx={{ fontSize: '0.7rem' }}>
+                  <strong>{m.name}:</strong> Min {m.normalRange.min} | Max {m.normalRange.max}
+                  {m.standard != null && ` | Target ${m.standard}`}
+                  {' | '}<span style={{ color: oor > 50 ? '#C1382E' : oor > 0 ? '#C47A20' : '#3A7D44' }}>{oor}% out of range</span>
+                </Typography>
+              );
+            })}
+          </Stack>
         </Card>
       )}
 

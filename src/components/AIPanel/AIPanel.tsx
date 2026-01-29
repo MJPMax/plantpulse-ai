@@ -141,7 +141,7 @@ export default function AIPanel() {
           <Box key={msg.id} sx={{ mb: 1, display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
             <Paper sx={{
               px: 1.5, py: 1, maxWidth: '90%',
-              bgcolor: msg.role === 'user' ? '#EDE8E0' : '#F5F3EF',
+              bgcolor: msg.role === 'user' ? '#D0CCC6' : '#E8E6E3',
               borderRadius: 2,
             }}>
               <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', fontSize: '0.8rem', color: 'text.primary' }}>

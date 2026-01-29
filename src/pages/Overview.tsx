@@ -5,7 +5,7 @@ import {
 import { OpenInNew as SeeqIcon } from '@mui/icons-material';
 import { ResponsiveContainer, LineChart, Line, ReferenceLine, ReferenceArea } from 'recharts';
 import { useStore } from '../app/store';
-import { fmtTs, fmtDuration } from '../app/utils';
+import { fmtTs, fmtDuration, pctOutOfRange } from '../app/utils';
 import SeverityDot from '../components/common/SeverityDot';
 import { AnomalyStatusChip } from '../components/common/StatusChip';
 import TrendChart from '../components/charts/TrendChart';
@@ -131,6 +131,11 @@ export default function Overview() {
                   {a.title}
                 </Typography>
                 <AnomalyStatusChip status={a.status} />
+                {(() => {
+                  const relMets = metrics.filter((m) => a.relatedMetricIds.includes(m.id));
+                  const maxPct = Math.max(0, ...relMets.map((m) => pctOutOfRange(m.timeseries, m.normalRange)));
+                  return maxPct > 0 ? <Chip label={`⚠ ${maxPct}% out of range`} size="small" color={maxPct > 50 ? 'error' : 'warning'} sx={{ fontSize: '0.65rem' }} /> : null;
+                })()}
               </Stack>
               <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.5 }}>
                 <Typography variant="caption" color="text.secondary">{fmtTs(a.startTime)} · {fmtDuration(a.startTime)}</Typography>

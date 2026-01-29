@@ -6,14 +6,14 @@ export const theme = createTheme({
     primary: { main: '#6B4F3A' },
     secondary: { main: '#8B6E55' },
     background: {
-      default: '#F5F3EF',
-      paper: '#FFFFFF',
+      default: '#E8E6E3',
+      paper: '#F5F3F0',
     },
     text: {
       primary: '#2D2D2D',
       secondary: '#6B6B6B',
     },
-    divider: '#E5E2DC',
+    divider: '#D4D1CC',
     error: { main: '#C1382E' },
     warning: { main: '#C47A20' },
     success: { main: '#3A7D44' },
@@ -36,7 +36,7 @@ export const theme = createTheme({
       styleOverrides: {
         '@import': "url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap')",
         body: {
-          backgroundColor: '#F5F3EF',
+          backgroundColor: '#E8E6E3',
           WebkitFontSmoothing: 'antialiased',
           MozOsxFontSmoothing: 'grayscale',
         },
@@ -46,7 +46,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          border: '1px solid #E5E2DC',
+          border: '1px solid #D4D1CC',
           boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
           '&:hover': { boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
         },
@@ -84,7 +84,7 @@ export const theme = createTheme({
     },
     MuiDrawer: {
       styleOverrides: {
-        paper: { borderColor: '#E5E2DC' },
+        paper: { borderColor: '#D4D1CC' },
       },
     },
     MuiTab: {

@@ -59,3 +59,10 @@ export function genTimeseries(hours: number, base: number, noise: number, interv
 export function confirmationsNeeded(severity: Severity): number {
   return severity === 'Critical' ? 2 : 1;
 }
+
+/** Compute % of timeseries points outside [min, max] range */
+export function pctOutOfRange(timeseries: { ts: number; value: number }[], range: { min: number; max: number }): number {
+  if (!timeseries.length) return 0;
+  const out = timeseries.filter((p) => p.value < range.min || p.value > range.max).length;
+  return Math.round((out / timeseries.length) * 100);
+}

@@ -157,7 +157,7 @@ export default function App() {
               width: '33.33%', maxWidth: 460, minWidth: 340, flexShrink: 0,
               overflow: 'auto',
               borderLeft: '1px solid', borderColor: 'divider',
-              bgcolor: '#EDEAE4',
+              bgcolor: '#DDD9D3',
             }}>
               <AIPanel />
             </Box>
@@ -168,7 +168,7 @@ export default function App() {
       {/* Tablet/mobile AI drawer */}
       {!isDesktop && (
         <Drawer anchor={isTablet ? 'right' : 'bottom'} open={aiOpen} onClose={() => setAiOpen(false)}
-          sx={{ '& .MuiDrawer-paper': { bgcolor: '#EDEAE4', ...(isTablet ? { width: AI_WIDTH, top: 48 } : { height: '70vh' }) } }}>
+          sx={{ '& .MuiDrawer-paper': { bgcolor: '#DDD9D3', ...(isTablet ? { width: AI_WIDTH, top: 48 } : { height: '70vh' }) } }}>
           <AIPanel />
         </Drawer>
       )}

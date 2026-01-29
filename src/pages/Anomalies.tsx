@@ -7,14 +7,14 @@ import {
 import { useStore } from '../app/store';
 import SeverityDot from '../components/common/SeverityDot';
 import { AnomalyStatusChip } from '../components/common/StatusChip';
-import { fmtTs, fmtDuration, confirmationsNeeded } from '../app/utils';
+import { fmtTs, fmtDuration, confirmationsNeeded, pctOutOfRange } from '../app/utils';
 import ConfirmAnomalyDialog from '../components/dialogs/ConfirmAnomalyDialog';
 import AssignActionDrawer from '../components/dialogs/AssignActionDrawer';
 import type { Anomaly, Severity, AnomalyStatus } from '../app/types';
 
 export default function Anomalies() {
   const navigate = useNavigate();
-  const { anomalies, actions, currentFacilityId, users, searchQuery } = useStore();
+  const { anomalies, actions, metrics, currentFacilityId, users, searchQuery } = useStore();
 
   const [sevFilter, setSevFilter] = useState<Severity | 'All'>('All');
   const [statusFilter, setStatusFilter] = useState<AnomalyStatus | 'All'>('All');
@@ -72,6 +72,7 @@ export default function Anomalies() {
               <TableCell>Status</TableCell>
               <TableCell>Start / Duration</TableCell>
               <TableCell>Owner</TableCell>
+              <TableCell>Out of Range</TableCell>
               <TableCell>Actions</TableCell>
               <TableCell></TableCell>
             </TableRow>
@@ -94,6 +95,13 @@ export default function Anomalies() {
                     <Typography variant="caption" color="text.secondary">{fmtDuration(a.startTime)}</Typography>
                   </TableCell>
                   <TableCell><Typography variant="body2" sx={{ fontSize: '0.8rem' }}>{owner?.name ?? '—'}</Typography></TableCell>
+                  <TableCell>
+                    {(() => {
+                      const relMets = metrics.filter((m) => a.relatedMetricIds.includes(m.id));
+                      const maxPct = Math.max(0, ...relMets.map((m) => pctOutOfRange(m.timeseries, m.normalRange)));
+                      return maxPct > 0 ? <Chip label={`${maxPct}%`} size="small" color={maxPct > 50 ? 'error' : 'warning'} sx={{ fontSize: '0.7rem' }} /> : <Typography variant="body2" color="text.secondary">—</Typography>;
+                    })()}
+                  </TableCell>
                   <TableCell><Chip label={`${openActions}/${totalActions}`} size="small" variant="outlined" sx={{ fontSize: '0.7rem' }} /></TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={0.5} onClick={(e) => e.stopPropagation()}>
