@@ -56,6 +56,22 @@ export function genTimeseries(hours: number, base: number, noise: number, interv
   return pts;
 }
 
+/** Generate timeseries where driftPct of points drift toward driftTarget (outside normal range) */
+export function genDriftTimeseries(hours: number, base: number, noise: number, driftTarget: number, driftPct: number, interval = 15): { ts: number; value: number }[] {
+  const now = Date.now();
+  const pts: { ts: number; value: number }[] = [];
+  const count = (hours * 60) / interval;
+  for (let i = 0; i < count; i++) {
+    const ts = now - (count - i) * interval * 60 * 1000;
+    const inDrift = Math.random() < driftPct;
+    const center = inDrift ? driftTarget : base;
+    const n = inDrift ? noise * 0.5 : noise;
+    const value = center + (Math.random() - 0.5) * n * 2;
+    pts.push({ ts, value: Math.round(value * 100) / 100 });
+  }
+  return pts;
+}
+
 export function confirmationsNeeded(severity: Severity): number {
   return severity === 'Critical' ? 2 : 1;
 }

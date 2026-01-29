@@ -8,7 +8,6 @@ import { useStore } from '../app/store';
 import { fmtTs, fmtDuration, computeHealthScore } from '../app/utils';
 import SeverityDot from '../components/common/SeverityDot';
 import { AnomalyStatusChip } from '../components/common/StatusChip';
-import TrendChart from '../components/charts/TrendChart';
 import { useState } from 'react';
 import ConfirmAnomalyDialog from '../components/dialogs/ConfirmAnomalyDialog';
 import AssignActionDrawer from '../components/dialogs/AssignActionDrawer';
@@ -153,21 +152,6 @@ export default function Overview() {
         ))}
         {facAnomalies.length === 0 && <Typography variant="body2" color="text.secondary">No active anomalies.</Typography>}
       </Stack>
-
-      {/* Trend Panel */}
-      <Typography variant="h6" sx={{ mb: 1 }}>Trends</Typography>
-      <Card sx={{ p: 2 }}>
-        <TrendChart
-          series={[
-            { name: 'DT Dome Temp', data: metrics.find((m) => m.id === 'li-2')?.timeseries ?? [], color: '#C1382E' },
-            { name: 'Solvent Ratio', data: metrics.find((m) => m.id === 'li-8')?.timeseries ?? [], color: '#3670A1' },
-            { name: 'Reboiler Temp', data: metrics.find((m) => m.id === 'li-11')?.timeseries ?? [], color: '#C47A20' },
-          ]}
-          height={220}
-          anomalyBands={facAnomalies.slice(0, 2).map((a) => ({ start: a.startTime, end: a.endTime ?? Date.now() }))}
-          backgroundSeries={{ name: 'Plant Rate', data: metrics.find((m) => m.id === 'met-1')?.timeseries ?? [] }}
-        />
-      </Card>
 
       {/* Dialogs */}
       {confirmTarget && <ConfirmAnomalyDialog open={!!confirmTarget} onClose={() => setConfirmTarget(null)} anomaly={confirmTarget} />}
