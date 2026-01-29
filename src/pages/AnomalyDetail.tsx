@@ -11,7 +11,7 @@ import { useStore } from '../app/store';
 import SeverityDot from '../components/common/SeverityDot';
 import { AnomalyStatusChip } from '../components/common/StatusChip';
 import { ActionStatusChip } from '../components/common/StatusChip';
-import { fmtTs, fmtDuration, confirmationsNeeded, pctOutOfRange } from '../app/utils';
+import { fmtTs, fmtDuration, confirmationsNeeded, pctOutOfRange, healthColor } from '../app/utils';
 import TrendChart from '../components/charts/TrendChart';
 import AuditTimeline from '../components/common/AuditTimeline';
 import ConfirmAnomalyDialog from '../components/dialogs/ConfirmAnomalyDialog';
@@ -74,6 +74,8 @@ export default function AnomalyDetail() {
       <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
         <Typography variant="body2" color="text.secondary">{anomaly.id} · {anomaly.area} · {anomaly.asset}</Typography>
         <Chip label={`Confidence: ${(anomaly.confidence * 100).toFixed(0)}%`} size="small" variant="outlined" />
+        <Chip label={`Health: ${anomaly.healthScore}%`} size="small"
+          sx={{ fontWeight: 700, bgcolor: healthColor(anomaly.healthScore), color: '#fff' }} />
         <Typography variant="body2" color="text.secondary">{fmtTs(anomaly.startTime)} · {fmtDuration(anomaly.startTime)}</Typography>
       </Stack>
 
@@ -152,6 +154,7 @@ export default function AnomalyDetail() {
             }))}
             height={200}
             anomalyBands={[{ start: anomaly.startTime, end: anomaly.endTime ?? Date.now() }]}
+            backgroundSeries={{ name: 'Plant Rate', data: store.metrics.find((m) => m.id === 'met-1')?.timeseries ?? [] }}
             refLines={relatedMetrics.flatMap((m) => {
               const lines: { label: string; value: number; color: string; dashed?: boolean }[] = [];
               lines.push({ label: `Min ${m.normalRange.min}`, value: m.normalRange.min, color: '#C1382E' });

@@ -75,7 +75,7 @@ export const anomalies: Anomaly[] = [
   {
     id: 'ano-1', facilityId: 'fac-1', title: 'DT Dome Temperature Drop', description: 'Desolventizer-Toaster dome temperature dropped below 60°C, indicating poor solvent stripping. Risk of elevated solvent in meal.',
     severity: 'Critical', confidence: 0.94, status: 'Under Review',
-    startTime: now - h(3), area: 'Extraction', asset: 'Desolventizer-Toaster',
+    startTime: now - h(24), area: 'Extraction', asset: 'Desolventizer-Toaster', healthScore: 38,
     relatedMetricIds: ['li-2', 'li-3', 'li-4', 'li-5'], drivers: [
       { metricId: 'li-2', direction: 'down', note: 'Dome temp dropped from 68°C to 56°C' },
       { metricId: 'li-3', direction: 'down', note: 'DT deck steam flow reduced 15%' },
@@ -95,7 +95,7 @@ export const anomalies: Anomaly[] = [
   {
     id: 'ano-2', facilityId: 'fac-1', title: 'Extraction Final Vent LEL Spike', description: 'Final vent LEL reading spiked to 18% LEL, approaching safety threshold of 20%.',
     severity: 'High', confidence: 0.91, status: 'New',
-    startTime: now - h(1.5), area: 'Extraction', asset: 'Final Vent',
+    startTime: now - h(24), area: 'Extraction', asset: 'Final Vent', healthScore: 52,
     relatedMetricIds: ['li-6', 'li-7', 'li-1'], drivers: [
       { metricId: 'li-6', direction: 'up', note: 'LEL spiked to 18% (limit 20%)' },
       { metricId: 'li-7', direction: 'up', note: 'Extractor pressure slightly positive' },
@@ -107,7 +107,7 @@ export const anomalies: Anomaly[] = [
   {
     id: 'ano-3', facilityId: 'fac-1', title: 'Solvent Ratio Out of Spec', description: 'Solvent-to-feed ratio dropped to 0.75, below minimum 0.80. Extraction efficiency at risk.',
     severity: 'Medium', confidence: 0.82, status: 'Confirmed',
-    startTime: now - h(6), area: 'Extraction', asset: 'Solvent System',
+    startTime: now - h(24), area: 'Extraction', asset: 'Solvent System', healthScore: 61,
     relatedMetricIds: ['li-8', 'li-9', 'li-10'], drivers: [
       { metricId: 'li-8', direction: 'down', note: 'Ratio dropped to 0.75 (min 0.80)' },
       { metricId: 'li-9', direction: 'down', note: 'Solvent temp low — 48°C vs 50°C target' },
@@ -125,7 +125,7 @@ export const anomalies: Anomaly[] = [
   {
     id: 'ano-4', facilityId: 'fac-1', title: 'Flaker Roll Pressure Imbalance', description: 'Left and right flaker roll pressures diverging. Flake thickness uniformity at risk.',
     severity: 'Low', confidence: 0.68, status: 'Action Assigned',
-    startTime: now - h(10), area: 'Preparation', asset: 'Flaker',
+    startTime: now - h(24), area: 'Preparation', asset: 'Flaker', healthScore: 67,
     relatedMetricIds: ['li-14', 'li-15'], drivers: [
       { metricId: 'li-14', direction: 'oscillating', note: 'Flake thickness varying 0.22–0.38mm' },
       { metricId: 'li-15', direction: 'up', note: 'Flaker FLA climbing — 82% vs 72% normal' },
@@ -141,7 +141,7 @@ export const anomalies: Anomaly[] = [
   {
     id: 'ano-5', facilityId: 'fac-1', title: 'Reboiler Temperature Drift High', description: 'Reboiler temperature trending above 115°C, risking oil degradation and increased hexane loss.',
     severity: 'High', confidence: 0.89, status: 'Mitigation In Progress',
-    startTime: now - h(14), area: 'Extraction', asset: 'Reboiler',
+    startTime: now - h(24), area: 'Extraction', asset: 'Reboiler', healthScore: 45,
     relatedMetricIds: ['li-11', 'li-12', 'li-13'], drivers: [
       { metricId: 'li-11', direction: 'up', note: 'Reboiler temp at 118°C (max 115°C)' },
       { metricId: 'li-12', direction: 'up', note: 'Steam flow elevated — 920 kg/h' },
@@ -159,7 +159,7 @@ export const anomalies: Anomaly[] = [
   {
     id: 'ano-6', facilityId: 'fac-1', title: 'Conditioning Discharge Temp Sensor Drift', description: 'Conditioning discharge temperature sensor showing erratic readings inconsistent with process state.',
     severity: 'Info', confidence: 0.52, status: 'False Positive',
-    startTime: now - h(48), endTime: now - h(44), area: 'Preparation', asset: 'Conditioner',
+    startTime: now - h(48), endTime: now - h(24), area: 'Preparation', asset: 'Conditioner', healthScore: 58,
     relatedMetricIds: ['li-18'], drivers: [
       { metricId: 'li-18', direction: 'oscillating', note: 'Readings fluctuating ±8°C in 10 minutes' },
     ],
@@ -174,7 +174,7 @@ export const anomalies: Anomaly[] = [
   {
     id: 'ano-7', facilityId: 'fac-1', title: 'Distillation Vacuum Loss', description: 'Distillation vacuum degraded to 660 mmHg, resolved after condenser cleaning.',
     severity: 'Medium', confidence: 0.85, status: 'Resolved',
-    startTime: now - h(72), endTime: now - h(60), area: 'Extraction', asset: 'Distillation',
+    startTime: now - h(72), endTime: now - h(48), area: 'Extraction', asset: 'Distillation', healthScore: 55,
     relatedMetricIds: ['li-1', 'li-11'], drivers: [
       { metricId: 'li-1', direction: 'down', note: 'Vacuum dropped to 660 mmHg' },
     ],
@@ -196,7 +196,7 @@ export const anomalies: Anomaly[] = [
   {
     id: 'ano-8', facilityId: 'fac-1', title: 'Boiler Feedwater Temperature Low', description: 'Boiler feedwater temperature dropped to 82°C, affecting steam generation efficiency.',
     severity: 'Medium', confidence: 0.76, status: 'New',
-    startTime: now - h(2), area: 'Utilities', asset: 'Boiler',
+    startTime: now - h(24), area: 'Utilities', asset: 'Boiler', healthScore: 63,
     relatedMetricIds: ['li-20', 'li-19', 'li-22'], drivers: [
       { metricId: 'li-20', direction: 'down', note: 'Feedwater temp at 82°C (min 85°C)' },
       { metricId: 'li-19', direction: 'down', note: 'Steam pressure slightly low — 7.8 bar' },

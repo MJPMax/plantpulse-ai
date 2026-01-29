@@ -5,6 +5,8 @@ import Anomalies from './pages/Anomalies';
 import AnomalyDetail from './pages/AnomalyDetail';
 import MetricDetail from './pages/MetricDetail';
 import Actions from './pages/Actions';
+import Specs from './pages/Specs';
+import Settings from './pages/Settings';
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +18,8 @@ export const router = createBrowserRouter([
       { path: 'anomalies/:id', element: <AnomalyDetail /> },
       { path: 'metrics/:id', element: <MetricDetail /> },
       { path: 'actions', element: <Actions /> },
+      { path: 'specs', element: <Specs /> },
+      { path: 'settings', element: <Settings /> },
     ],
   },
 ]);

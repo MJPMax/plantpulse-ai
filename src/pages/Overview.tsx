@@ -5,7 +5,7 @@ import {
 import { OpenInNew as SeeqIcon } from '@mui/icons-material';
 import { ResponsiveContainer, LineChart, Line, ReferenceLine, ReferenceArea } from 'recharts';
 import { useStore } from '../app/store';
-import { fmtTs, fmtDuration, pctOutOfRange } from '../app/utils';
+import { fmtTs, fmtDuration, healthColor } from '../app/utils';
 import SeverityDot from '../components/common/SeverityDot';
 import { AnomalyStatusChip } from '../components/common/StatusChip';
 import TrendChart from '../components/charts/TrendChart';
@@ -119,8 +119,8 @@ export default function Overview() {
         })}
       </Grid>
 
-      {/* Active Anomalies */}
-      <Typography variant="h6" sx={{ mb: 1 }}>Active Anomalies</Typography>
+      {/* Process Health Anomalies */}
+      <Typography variant="h6" sx={{ mb: 1 }}>Process Health Anomalies</Typography>
       <Stack spacing={1} sx={{ mb: 3 }}>
         {facAnomalies.map((a) => (
           <Card key={a.id}>
@@ -131,18 +131,11 @@ export default function Overview() {
                   {a.title}
                 </Typography>
                 <AnomalyStatusChip status={a.status} />
-                {(() => {
-                  const relMets = metrics.filter((m) => a.relatedMetricIds.includes(m.id));
-                  const maxPct = Math.max(0, ...relMets.map((m) => pctOutOfRange(m.timeseries, m.normalRange)));
-                  return maxPct > 0 ? <Chip label={`⚠ ${maxPct}% out of range`} size="small" color={maxPct > 50 ? 'error' : 'warning'} sx={{ fontSize: '0.65rem' }} /> : null;
-                })()}
+                <Chip label={`Health: ${a.healthScore}%`} size="small"
+                  sx={{ fontSize: '0.65rem', fontWeight: 700, bgcolor: healthColor(a.healthScore), color: '#fff' }} />
               </Stack>
               <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.5 }}>
                 <Typography variant="caption" color="text.secondary">{fmtTs(a.startTime)} · {fmtDuration(a.startTime)}</Typography>
-                {a.drivers.slice(0, 3).map((d) => (
-                  <Chip key={d.metricId} label={`${metrics.find((m) => m.id === d.metricId)?.name ?? d.metricId} ${d.direction === 'up' ? '↑' : d.direction === 'down' ? '↓' : '~'}`}
-                    size="small" variant="outlined" sx={{ fontSize: '0.65rem' }} />
-                ))}
               </Stack>
               <Stack direction="row" spacing={0.5}>
                 <Button size="small" onClick={() => navigate(`/anomalies/${a.id}`)}>Open</Button>
@@ -167,6 +160,7 @@ export default function Overview() {
           ]}
           height={220}
           anomalyBands={facAnomalies.slice(0, 2).map((a) => ({ start: a.startTime, end: a.endTime ?? Date.now() }))}
+          backgroundSeries={{ name: 'Plant Rate', data: metrics.find((m) => m.id === 'met-1')?.timeseries ?? [] }}
         />
       </Card>
 

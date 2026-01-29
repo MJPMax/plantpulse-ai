@@ -66,3 +66,16 @@ export function pctOutOfRange(timeseries: { ts: number; value: number }[], range
   const out = timeseries.filter((p) => p.value < range.min || p.value > range.max).length;
   return Math.round((out / timeseries.length) * 100);
 }
+
+/** Compute health score: % of timeseries points within [min, max] range */
+export function computeHealthScore(timeseries: { ts: number; value: number }[], range: { min: number; max: number }): number {
+  return 100 - pctOutOfRange(timeseries, range);
+}
+
+/** Color for health score */
+export function healthColor(score: number): string {
+  if (score < 40) return '#C1382E';
+  if (score < 60) return '#C47A20';
+  if (score < 70) return '#B8860B';
+  return '#3A7D44';
+}

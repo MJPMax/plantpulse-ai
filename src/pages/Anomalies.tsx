@@ -7,18 +7,19 @@ import {
 import { useStore } from '../app/store';
 import SeverityDot from '../components/common/SeverityDot';
 import { AnomalyStatusChip } from '../components/common/StatusChip';
-import { fmtTs, fmtDuration, confirmationsNeeded, pctOutOfRange } from '../app/utils';
+import { fmtTs, fmtDuration, confirmationsNeeded, healthColor } from '../app/utils';
 import ConfirmAnomalyDialog from '../components/dialogs/ConfirmAnomalyDialog';
 import AssignActionDrawer from '../components/dialogs/AssignActionDrawer';
 import type { Anomaly, Severity, AnomalyStatus } from '../app/types';
 
 export default function Anomalies() {
   const navigate = useNavigate();
-  const { anomalies, actions, metrics, currentFacilityId, users, searchQuery } = useStore();
+  const { anomalies, actions, currentFacilityId, users, searchQuery } = useStore();
 
   const [sevFilter, setSevFilter] = useState<Severity | 'All'>('All');
   const [statusFilter, setStatusFilter] = useState<AnomalyStatus | 'All'>('All');
   const [needsConfirm, setNeedsConfirm] = useState(false);
+  const [sortByHealth, setSortByHealth] = useState(false);
   const [confirmTarget, setConfirmTarget] = useState<Anomaly | null>(null);
   const [assignTarget, setAssignTarget] = useState<string | null>(null);
 
@@ -31,12 +32,12 @@ export default function Anomalies() {
       const q = searchQuery.toLowerCase();
       list = list.filter((a) => a.title.toLowerCase().includes(q) || a.id.toLowerCase().includes(q));
     }
-    return list.sort((a, b) => b.startTime - a.startTime);
-  }, [anomalies, currentFacilityId, sevFilter, statusFilter, needsConfirm, searchQuery]);
+    return list.sort((a, b) => sortByHealth ? a.healthScore - b.healthScore : b.startTime - a.startTime);
+  }, [anomalies, currentFacilityId, sevFilter, statusFilter, needsConfirm, searchQuery, sortByHealth]);
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ mb: 2 }}>Anomalies Workbench</Typography>
+      <Typography variant="h5" sx={{ mb: 2 }}>Process Health Anomalies</Typography>
 
       {/* Filters */}
       <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap', gap: 1 }}>
@@ -72,7 +73,9 @@ export default function Anomalies() {
               <TableCell>Status</TableCell>
               <TableCell>Start / Duration</TableCell>
               <TableCell>Owner</TableCell>
-              <TableCell>Out of Range</TableCell>
+              <TableCell sx={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => setSortByHealth(!sortByHealth)}>
+                % Health {sortByHealth ? '▲' : ''}
+              </TableCell>
               <TableCell>Actions</TableCell>
               <TableCell></TableCell>
             </TableRow>
@@ -96,11 +99,8 @@ export default function Anomalies() {
                   </TableCell>
                   <TableCell><Typography variant="body2" sx={{ fontSize: '0.8rem' }}>{owner?.name ?? '—'}</Typography></TableCell>
                   <TableCell>
-                    {(() => {
-                      const relMets = metrics.filter((m) => a.relatedMetricIds.includes(m.id));
-                      const maxPct = Math.max(0, ...relMets.map((m) => pctOutOfRange(m.timeseries, m.normalRange)));
-                      return maxPct > 0 ? <Chip label={`${maxPct}%`} size="small" color={maxPct > 50 ? 'error' : 'warning'} sx={{ fontSize: '0.7rem' }} /> : <Typography variant="body2" color="text.secondary">—</Typography>;
-                    })()}
+                    <Chip label={`${a.healthScore}%`} size="small"
+                      sx={{ fontSize: '0.7rem', fontWeight: 700, bgcolor: healthColor(a.healthScore), color: '#fff' }} />
                   </TableCell>
                   <TableCell><Chip label={`${openActions}/${totalActions}`} size="small" variant="outlined" sx={{ fontSize: '0.7rem' }} /></TableCell>
                   <TableCell>

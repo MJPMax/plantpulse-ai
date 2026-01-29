@@ -114,6 +114,7 @@ export interface Anomaly {
   ownerUserId?: string;
   comments: Comment[];
   actionIds: string[];
+  healthScore: number;
   resolutionLog: ResolutionLog | null;
   audit: AuditEvent[];
 }

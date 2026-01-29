@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon, Warning as WarningIcon, Assignment as AssignmentIcon,
+  MenuBook as MenuBookIcon, Settings as SettingsIcon,
   SmartToy as AiIcon, Notifications as NotifIcon, Search as SearchIcon,
   Menu as MenuIcon, RestartAlt as ResetIcon,
 } from '@mui/icons-material';
@@ -18,8 +19,10 @@ const AI_WIDTH = 380;
 
 const navItems = [
   { label: 'Overview', icon: <DashboardIcon />, path: '/' },
-  { label: 'Anomalies', icon: <WarningIcon />, path: '/anomalies' },
+  { label: 'Process Health', icon: <WarningIcon />, path: '/anomalies' },
   { label: 'Actions', icon: <AssignmentIcon />, path: '/actions' },
+  { label: 'Specs & Standards', icon: <MenuBookIcon />, path: '/specs' },
+  { label: 'Settings', icon: <SettingsIcon />, path: '/settings' },
 ];
 
 export default function App() {
