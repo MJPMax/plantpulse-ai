@@ -1,6 +1,6 @@
 # PlantPulse AI — UI Prototype
 
-Interactive mock-up of an oilseed crushing facility monitoring application by Cargill. No backend, no real AI — all data is in-memory with localStorage persistence.
+Interactive mock-up of an facility process monitoring application. No backend, no real AI — all data is in-memory with localStorage persistence.
 
 ## Setup
 
