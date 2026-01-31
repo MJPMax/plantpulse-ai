@@ -45,7 +45,7 @@ export default function TrendChart({ series, height = 260, normalRange, anomalyB
           ))}
           {refLines?.map((rl, i) => (
             <ReferenceLine key={`ref-${i}`} yAxisId="left" y={rl.value} stroke={rl.color} strokeDasharray={rl.dashed ? '6 3' : undefined} strokeWidth={1.2}
-              label={{ value: rl.label, position: 'right', fill: rl.color, fontSize: 10 }} />
+              label={{ value: rl.label, position: 'insideTopRight', fill: rl.color, fontSize: 11 }} />
           ))}
           {/* Background plant rate — filled area */}
           {backgroundSeries && (

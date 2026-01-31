@@ -36,7 +36,7 @@ export default function MetricDetail() {
 
   // Reference lines: Standard + Goal (always visible)
   const refLines: { label: string; value: number; color: string; dashed?: boolean }[] = [];
-  if (metric.standard != null) refLines.push({ label: `Standard ${metric.standard}`, value: metric.standard, color: '#E91E63', dashed: true });
+  if (metric.standard != null) refLines.push({ label: `Std ${metric.standard}`, value: metric.standard, color: '#E91E63', dashed: true });
   if (metric.goal != null) refLines.push({ label: `Goal ${metric.goal}`, value: metric.goal, color: '#4CAF50', dashed: true });
 
   return (
