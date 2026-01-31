@@ -297,7 +297,7 @@ export default function Scoreboard() {
 
       {/* ── Operators section ── */}
       <Typography variant="body2" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#6B4F3A', mb: 1.5 }}>
-        Operators
+        Individual
       </Typography>
       <Box
         sx={{
