@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import {
-  Drawer, Typography, TextField, Select, MenuItem, Button, Stack,
-  Avatar, Box, IconButton,
+  Dialog, Typography, TextField, Select, MenuItem, Button, Stack,
+  Avatar, Box, IconButton, Slide,
 } from '@mui/material';
+import type { TransitionProps } from '@mui/material/transitions';
 import { Close as CloseIcon, Person as PersonIcon } from '@mui/icons-material';
+import { forwardRef } from 'react';
 import { useStore } from '../../app/store';
 import type { ActionType, AssigneeGroup } from '../../app/types';
 
@@ -22,6 +24,13 @@ function assigneeColor(name: string) {
   for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
   return `hsl(${h % 360}, 30%, 45%)`;
 }
+
+const SlideLeft = forwardRef(function SlideLeft(
+  props: TransitionProps & { children: React.ReactElement },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="left" ref={ref} {...props} />;
+});
 
 export default function AssignActionDrawer({ open, onClose, anomalyId }: Props) {
   const { createAction, users } = useStore();
@@ -47,8 +56,15 @@ export default function AssignActionDrawer({ open, onClose, anomalyId }: Props) 
   };
 
   return (
-    <Drawer anchor="right" open={open} onClose={onClose}
-      sx={{ '& .MuiDrawer-paper': { width: 400, p: 3, top: 48 }, '& .MuiBackdrop-root': { top: 48 } }}>
+    <Dialog open={open} onClose={onClose} TransitionComponent={SlideLeft}
+      maxWidth={false}
+      sx={{
+        '& .MuiDialog-container': { justifyContent: 'flex-end' },
+        '& .MuiDialog-paper': {
+          m: 0, width: 400, maxHeight: '100vh', height: '100vh',
+          borderRadius: 0, p: 3, overflowY: 'auto',
+        },
+      }}>
       {/* Header */}
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
         <Typography variant="h6">Create Action</Typography>
@@ -104,6 +120,6 @@ export default function AssignActionDrawer({ open, onClose, anomalyId }: Props) 
       </Box>
 
       <Button variant="contained" fullWidth onClick={handleSubmit} disabled={!title.trim()}>Create Action</Button>
-    </Drawer>
+    </Dialog>
   );
 }
