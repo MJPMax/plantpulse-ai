@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  Drawer, Typography, TextField, Select, MenuItem, Button, Stack, FormControl, InputLabel,
+  Drawer, Typography, TextField, Select, MenuItem, Button, Stack,
   Avatar, Box, IconButton,
 } from '@mui/material';
 import { Check as CheckIcon, Close as CloseIcon, Person as PersonIcon } from '@mui/icons-material';
