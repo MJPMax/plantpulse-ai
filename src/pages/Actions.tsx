@@ -143,7 +143,7 @@ export default function Actions() {
             </FormControl>
           </Stack>
 
-          <Stack spacing={1} sx={{ maxHeight: 'calc(100vh - 220px)', overflowY: 'auto', pr: 0.5 }}>
+          <Stack spacing={1} sx={{ maxHeight: 'calc(100vh - 220px)', overflowY: 'auto', pr: 0.5, pl: 0.25 }}>
             {filtered.map((a) => {
               const name = getAssigneeName(a);
               const isSelected = a.id === selectedId;
@@ -164,12 +164,12 @@ export default function Actions() {
                     </Stack>
 
                     {/* Assignee row — prominent */}
-                    <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 0.75 }}>
+                    <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 0.75, overflow: 'hidden' }}>
                       <Avatar
                         sx={{
-                          width: 24, height: 24, fontSize: '0.6rem', fontWeight: 700,
+                          width: 24, height: 24, minWidth: 24, fontSize: '0.6rem', fontWeight: 700,
                           bgcolor: name === 'Unassigned' ? '#D4D1CC' : assigneeColor(name),
-                          color: '#fff',
+                          color: '#fff', flexShrink: 0,
                         }}
                       >
                         {name === 'Unassigned' ? <PersonIcon sx={{ fontSize: 14 }} /> : userInitials(name)}
