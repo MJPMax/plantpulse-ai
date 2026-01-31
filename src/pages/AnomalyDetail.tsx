@@ -101,7 +101,7 @@ export default function AnomalyDetail() {
       {/* Action buttons */}
       <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap', gap: 0.5 }}>
         <Button variant="contained" size="small" onClick={() => setConfirmOpen(true)} startIcon={<ConfirmIcon />}>Confirm</Button>
-        <Button variant="outlined" size="small" onClick={() => setAssignOpen(true)} startIcon={<AddIcon />}>Assign Action</Button>
+        <Button variant="outlined" size="small" onClick={() => setAssignOpen(!assignOpen)} startIcon={<AddIcon />}>{assignOpen ? 'Cancel' : 'Assign Action'}</Button>
         <Button variant="outlined" size="small" onClick={() => setSeeqOpen(true)} startIcon={<SeeqIcon />}>Open in SEEQ</Button>
         <Button variant="outlined" size="small" onClick={(e) => setStatusMenu(e.currentTarget)}>Change Status</Button>
         {anomaly.status !== 'False Positive' && (
@@ -113,6 +113,8 @@ export default function AnomalyDetail() {
       <Menu anchorEl={statusMenu} open={!!statusMenu} onClose={() => setStatusMenu(null)}>
         {STATUS_FLOW.map((s) => <MenuItem key={s} onClick={() => handleStatusChange(s)}>{s}</MenuItem>)}
       </Menu>
+
+      <AssignActionDrawer open={assignOpen} onClose={() => setAssignOpen(false)} anomalyId={anomaly.id} />
 
       {/* Narrative */}
       <Card sx={{ mb: 2 }}>
@@ -192,7 +194,6 @@ export default function AnomalyDetail() {
           <Button size="small" variant="outlined" startIcon={<AddIcon />} sx={{ mb: 1 }} onClick={() => setAssignOpen(!assignOpen)}>
             {assignOpen ? 'Cancel' : 'Create Action'}
           </Button>
-          <AssignActionDrawer open={assignOpen} onClose={() => setAssignOpen(false)} anomalyId={anomaly.id} />
           <Stack spacing={1}>
             {linkedActions.map((a) => (
               <Card key={a.id} variant="outlined">
