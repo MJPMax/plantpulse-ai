@@ -48,7 +48,7 @@ export default function AssignActionDrawer({ open, onClose, anomalyId }: Props) 
 
   return (
     <Drawer anchor="right" open={open} onClose={onClose}
-      sx={{ zIndex: 1300, '& .MuiDrawer-paper': { width: 400, p: 3 } }}>
+      sx={{ '& .MuiDrawer-paper': { width: 400, p: 3, top: 48 }, '& .MuiBackdrop-root': { top: 48 } }}>
       {/* Header */}
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
         <Typography variant="h6">Create Action</Typography>
