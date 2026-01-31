@@ -54,6 +54,7 @@ interface StoreState {
   // Action actions
   createAction: (anomalyId: string, fields: Omit<Action, 'id' | 'anomalyId' | 'notes'>) => void;
   updateActionStatus: (actionId: string, status: ActionStatus) => void;
+  updateAction: (actionId: string, fields: Partial<Omit<Action, 'id' | 'anomalyId' | 'notes'>>) => void;
   addActionNote: (actionId: string, text: string) => void;
 
   // Chat
@@ -164,6 +165,10 @@ export const useStore = create<StoreState>()(
 
       updateActionStatus: (actionId, status) => set((s) => ({
         actions: s.actions.map((a) => a.id === actionId ? { ...a, status } : a),
+      })),
+
+      updateAction: (actionId, fields) => set((s) => ({
+        actions: s.actions.map((a) => a.id === actionId ? { ...a, ...fields } : a),
       })),
 
       addActionNote: (actionId, text) => set((s) => ({
