@@ -3,7 +3,7 @@ import {
   Drawer, Typography, TextField, Select, MenuItem, Button, Stack,
   Avatar, Box, IconButton,
 } from '@mui/material';
-import { Check as CheckIcon, Close as CloseIcon, Person as PersonIcon } from '@mui/icons-material';
+import { Close as CloseIcon, Person as PersonIcon } from '@mui/icons-material';
 import { useStore } from '../../app/store';
 import type { ActionType, AssigneeGroup } from '../../app/types';
 
@@ -47,17 +47,17 @@ export default function AssignActionDrawer({ open, onClose, anomalyId }: Props) 
   };
 
   return (
-    <Drawer anchor="right" open={open} onClose={onClose} sx={{ '& .MuiDrawer-paper': { width: 400, p: 3, pt: 10 } }}>
+    <Drawer anchor="right" open={open} onClose={onClose}
+      sx={{ zIndex: 1300, '& .MuiDrawer-paper': { width: 400, p: 3 } }}>
       {/* Header */}
-      <Stack direction="row" alignItems="center" sx={{ mb: 2 }}>
-        <TextField size="small" fullWidth value={title} onChange={(e) => setTitle(e.target.value)}
-          placeholder="Action title…"
-          sx={{ mr: 1, '& input': { fontWeight: 600, fontSize: '0.95rem' } }} />
-        <Stack direction="row" spacing={0.5}>
-          <IconButton size="small" color="primary" onClick={handleSubmit} disabled={!title.trim()}><CheckIcon fontSize="small" /></IconButton>
-          <IconButton size="small" onClick={onClose}><CloseIcon fontSize="small" /></IconButton>
-        </Stack>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
+        <Typography variant="h6">Create Action</Typography>
+        <IconButton size="small" onClick={onClose}><CloseIcon fontSize="small" /></IconButton>
       </Stack>
+
+      <TextField size="small" fullWidth value={title} onChange={(e) => setTitle(e.target.value)}
+        placeholder="Action title…" label="Title"
+        sx={{ mb: 2, '& input': { fontWeight: 600, fontSize: '0.95rem' } }} />
 
       {/* Assignee — prominent */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2, p: 1.5, bgcolor: '#F5F3F0', borderRadius: 1, border: '1px solid #E8E6E3' }}>
