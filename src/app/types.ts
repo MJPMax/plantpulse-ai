@@ -140,6 +140,8 @@ export interface Action {
   status: ActionStatus;
   notes: ActionNote[];
   cmmsWorkOrderId?: string;
+  assigneeUserId?: string;
+  completedAt?: number;
 }
 
 // ── Time Range ──

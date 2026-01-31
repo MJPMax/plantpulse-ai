@@ -7,6 +7,7 @@ import MetricDetail from './pages/MetricDetail';
 import Actions from './pages/Actions';
 import Specs from './pages/Specs';
 import Settings from './pages/Settings';
+import Scoreboard from './pages/Scoreboard';
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
       { path: 'metrics/:id', element: <MetricDetail /> },
       { path: 'actions', element: <Actions /> },
       { path: 'specs', element: <Specs /> },
+      { path: 'scoreboard', element: <Scoreboard /> },
       { path: 'settings', element: <Settings /> },
     ],
   },

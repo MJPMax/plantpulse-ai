@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon, Warning as WarningIcon, Assignment as AssignmentIcon,
-  MenuBook as MenuBookIcon, Settings as SettingsIcon,
+  MenuBook as MenuBookIcon, Settings as SettingsIcon, BarChart as BarChartIcon,
   SmartToy as AiIcon, Notifications as NotifIcon, Search as SearchIcon,
   Menu as MenuIcon, RestartAlt as ResetIcon,
 } from '@mui/icons-material';
@@ -22,6 +22,7 @@ const navItems = [
   { label: 'Process Health', icon: <WarningIcon />, path: '/anomalies' },
   { label: 'Actions', icon: <AssignmentIcon />, path: '/actions' },
   { label: 'Specs & Standards', icon: <MenuBookIcon />, path: '/specs' },
+  { label: 'Scoreboard', icon: <BarChartIcon />, path: '/scoreboard' },
   { label: 'Settings', icon: <SettingsIcon />, path: '/settings' },
 ];
 
