@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import {
   Drawer, Typography, TextField, Select, MenuItem, Button, Stack, FormControl, InputLabel,
-  Avatar, Box,
+  Avatar, Box, IconButton,
 } from '@mui/material';
-import { Person as PersonIcon } from '@mui/icons-material';
+import { Check as CheckIcon, Close as CloseIcon, Person as PersonIcon } from '@mui/icons-material';
 import { useStore } from '../../app/store';
 import type { ActionType, AssigneeGroup } from '../../app/types';
 
 interface Props { open: boolean; onClose: () => void; anomalyId: string }
+
+const ACTION_TYPES: ActionType[] = ['Inspect', 'Repair', 'Calibrate', 'Adjust', 'Replace', 'Clean'];
+const ASSIGNEE_GROUPS: AssigneeGroup[] = ['Maintenance', 'Electrician', 'Instrumentation', 'Operations'];
+const PRIORITIES = ['Low', 'Medium', 'High'] as const;
 
 function userInitials(name: string) {
   return name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase();
@@ -28,6 +32,7 @@ export default function AssignActionDrawer({ open, onClose, anomalyId }: Props) 
   const [assigneeUserId, setAssigneeUserId] = useState('');
 
   const selectedUser = users.find((u) => u.id === assigneeUserId);
+  const assigneeName = selectedUser?.name ?? 'Unassigned';
 
   const handleSubmit = () => {
     if (!title.trim()) return;
@@ -42,63 +47,63 @@ export default function AssignActionDrawer({ open, onClose, anomalyId }: Props) 
   };
 
   return (
-    <Drawer anchor="right" open={open} onClose={onClose} sx={{ '& .MuiDrawer-paper': { width: 380, p: 3 } }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>Assign Action</Typography>
-      <Stack spacing={2}>
-        <TextField label="Action Title" value={title} onChange={(e) => setTitle(e.target.value)} fullWidth />
-        <FormControl fullWidth>
-          <InputLabel>Type</InputLabel>
-          <Select value={type} label="Type" onChange={(e) => setType(e.target.value as ActionType)}>
-            {['Inspect', 'Repair', 'Calibrate', 'Adjust', 'Replace', 'Clean'].map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth>
-          <InputLabel>Assignee Group</InputLabel>
-          <Select value={group} label="Assignee Group" onChange={(e) => setGroup(e.target.value as AssigneeGroup)}>
-            {['Maintenance', 'Electrician', 'Instrumentation', 'Operations'].map((g) => <MenuItem key={g} value={g}>{g}</MenuItem>)}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth>
-          <InputLabel>Assign To</InputLabel>
-          <Select value={assigneeUserId} label="Assign To" displayEmpty
-            onChange={(e) => setAssigneeUserId(e.target.value as string)}
-            renderValue={(val) => {
-              if (!val) return <em style={{ color: '#999' }}>Unassigned</em>;
-              const u = users.find((u) => u.id === val);
-              return u ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Avatar sx={{ width: 22, height: 22, fontSize: '0.55rem', fontWeight: 700, bgcolor: assigneeColor(u.name), color: '#fff' }}>
-                    {userInitials(u.name)}
-                  </Avatar>
-                  {u.name}
-                </Box>
-              ) : '';
-            }}>
-            <MenuItem value=""><em>Unassigned</em></MenuItem>
-            {users.map((u) => (
-              <MenuItem key={u.id} value={u.id}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Avatar sx={{ width: 24, height: 24, fontSize: '0.6rem', fontWeight: 700, bgcolor: assigneeColor(u.name), color: '#fff' }}>
-                    {userInitials(u.name)}
-                  </Avatar>
-                  <Box>
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>{u.name}</Typography>
-                    <Typography variant="caption" color="text.secondary">{u.role}</Typography>
-                  </Box>
-                </Box>
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth>
-          <InputLabel>Priority</InputLabel>
-          <Select value={priority} label="Priority" onChange={(e) => setPriority(e.target.value as any)}>
-            {['Low', 'Medium', 'High'].map((p) => <MenuItem key={p} value={p}>{p}</MenuItem>)}
-          </Select>
-        </FormControl>
-        <Button variant="contained" onClick={handleSubmit} disabled={!title.trim()}>Create Action</Button>
-        <Button onClick={onClose}>Cancel</Button>
+    <Drawer anchor="right" open={open} onClose={onClose} sx={{ '& .MuiDrawer-paper': { width: 400, p: 3 } }}>
+      {/* Header */}
+      <Stack direction="row" alignItems="center" sx={{ mb: 2 }}>
+        <TextField size="small" fullWidth value={title} onChange={(e) => setTitle(e.target.value)}
+          placeholder="Action title…"
+          sx={{ mr: 1, '& input': { fontWeight: 600, fontSize: '0.95rem' } }} />
+        <Stack direction="row" spacing={0.5}>
+          <IconButton size="small" color="primary" onClick={handleSubmit} disabled={!title.trim()}><CheckIcon fontSize="small" /></IconButton>
+          <IconButton size="small" onClick={onClose}><CloseIcon fontSize="small" /></IconButton>
+        </Stack>
       </Stack>
+
+      {/* Assignee — prominent */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2, p: 1.5, bgcolor: '#F5F3F0', borderRadius: 1, border: '1px solid #E8E6E3' }}>
+        <Avatar sx={{
+          width: 36, height: 36, fontSize: '0.8rem', fontWeight: 700,
+          bgcolor: assigneeName === 'Unassigned' ? '#D4D1CC' : assigneeColor(assigneeName), color: '#fff',
+        }}>
+          {assigneeName === 'Unassigned' ? <PersonIcon /> : userInitials(assigneeName)}
+        </Avatar>
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1 }}>Assigned to</Typography>
+          <Select size="small" value={assigneeUserId} displayEmpty
+            onChange={(e) => setAssigneeUserId(e.target.value as string)}
+            sx={{ mt: 0.5, minWidth: 180, fontSize: '0.82rem' }}>
+            <MenuItem value=""><em>Unassigned</em></MenuItem>
+            {users.map((u) => <MenuItem key={u.id} value={u.id}>{u.name} — {u.role}</MenuItem>)}
+          </Select>
+        </Box>
+      </Box>
+
+      {/* Properties grid */}
+      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5, mb: 2 }}>
+        <Box>
+          <Typography variant="caption" color="text.secondary">Type</Typography>
+          <Select size="small" fullWidth value={type} onChange={(e) => setType(e.target.value as ActionType)}
+            sx={{ mt: 0.25, fontSize: '0.82rem' }}>
+            {ACTION_TYPES.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
+          </Select>
+        </Box>
+        <Box>
+          <Typography variant="caption" color="text.secondary">Group</Typography>
+          <Select size="small" fullWidth value={group} onChange={(e) => setGroup(e.target.value as AssigneeGroup)}
+            sx={{ mt: 0.25, fontSize: '0.82rem' }}>
+            {ASSIGNEE_GROUPS.map((g) => <MenuItem key={g} value={g}>{g}</MenuItem>)}
+          </Select>
+        </Box>
+        <Box>
+          <Typography variant="caption" color="text.secondary">Priority</Typography>
+          <Select size="small" fullWidth value={priority} onChange={(e) => setPriority(e.target.value as any)}
+            sx={{ mt: 0.25, fontSize: '0.82rem' }}>
+            {PRIORITIES.map((p) => <MenuItem key={p} value={p}>{p}</MenuItem>)}
+          </Select>
+        </Box>
+      </Box>
+
+      <Button variant="contained" fullWidth onClick={handleSubmit} disabled={!title.trim()}>Create Action</Button>
     </Drawer>
   );
 }
