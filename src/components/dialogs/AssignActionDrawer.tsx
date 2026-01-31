@@ -61,8 +61,8 @@ export default function AssignActionDrawer({ open, onClose, anomalyId }: Props) 
       sx={{
         '& .MuiDialog-container': { justifyContent: 'flex-end' },
         '& .MuiDialog-paper': {
-          m: 0, width: 400, maxHeight: '100vh', height: '100vh',
-          borderRadius: 0, p: 3, overflowY: 'auto',
+          m: 0, width: 400, maxHeight: 'calc(100vh - 48px)', height: 'calc(100vh - 48px)',
+          borderRadius: 0, p: 3, overflowY: 'auto', position: 'fixed', top: 48, right: 0,
         },
       }}>
       {/* Header */}
