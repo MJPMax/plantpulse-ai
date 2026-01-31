@@ -189,9 +189,10 @@ export default function AnomalyDetail() {
 
       {tab === 1 && (
         <Box>
-          <Button size="small" variant="outlined" startIcon={<AddIcon />} sx={{ mb: 1 }} onClick={() => setAssignOpen(true)}>
-            Create Action
+          <Button size="small" variant="outlined" startIcon={<AddIcon />} sx={{ mb: 1 }} onClick={() => setAssignOpen(!assignOpen)}>
+            {assignOpen ? 'Cancel' : 'Create Action'}
           </Button>
+          <AssignActionDrawer open={assignOpen} onClose={() => setAssignOpen(false)} anomalyId={anomaly.id} />
           <Stack spacing={1}>
             {linkedActions.map((a) => (
               <Card key={a.id} variant="outlined">
@@ -244,7 +245,6 @@ export default function AnomalyDetail() {
 
       {/* Dialogs */}
       <ConfirmAnomalyDialog open={confirmOpen} onClose={() => setConfirmOpen(false)} anomaly={anomaly} />
-      <AssignActionDrawer open={assignOpen} onClose={() => setAssignOpen(false)} anomalyId={anomaly.id} />
       <SeeqDialog open={seeqOpen} onClose={() => setSeeqOpen(false)} anomaly={anomaly} />
     </Box>
   );

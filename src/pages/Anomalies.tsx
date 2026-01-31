@@ -128,8 +128,8 @@ export default function Anomalies() {
       </TableContainer>
       {filtered.length === 0 && <Typography variant="body2" color="text.secondary" sx={{ mt: 2, textAlign: 'center' }}>No anomalies match filters.</Typography>}
 
-      {confirmTarget && <ConfirmAnomalyDialog open={!!confirmTarget} onClose={() => setConfirmTarget(null)} anomaly={confirmTarget} />}
       {assignTarget && <AssignActionDrawer open={!!assignTarget} onClose={() => setAssignTarget(null)} anomalyId={assignTarget} />}
+      {confirmTarget && <ConfirmAnomalyDialog open={!!confirmTarget} onClose={() => setConfirmTarget(null)} anomaly={confirmTarget} />}
     </Box>
   );
 }
