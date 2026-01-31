@@ -47,7 +47,7 @@ export default function AssignActionDrawer({ open, onClose, anomalyId }: Props) 
   };
 
   return (
-    <Drawer anchor="right" open={open} onClose={onClose} sx={{ '& .MuiDrawer-paper': { width: 400, p: 3 } }}>
+    <Drawer anchor="right" open={open} onClose={onClose} sx={{ '& .MuiDrawer-paper': { width: 400, p: 3, pt: 10 } }}>
       {/* Header */}
       <Stack direction="row" alignItems="center" sx={{ mb: 2 }}>
         <TextField size="small" fullWidth value={title} onChange={(e) => setTitle(e.target.value)}
