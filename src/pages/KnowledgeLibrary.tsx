@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import {
-  Box, Typography, Grid2 as Grid, Card, CardContent, Stack, Chip, Button,
+  Box, Typography, Grid, Card, CardContent, Stack, Chip, Button,
   Select, MenuItem, FormControl, InputLabel, IconButton, Collapse,
   Table, TableBody, TableRow, TableCell, TableHead, TableContainer, Divider,
 } from '@mui/material';
