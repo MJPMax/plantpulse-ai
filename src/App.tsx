@@ -9,7 +9,7 @@ import {
   Dashboard as DashboardIcon, Warning as WarningIcon, Assignment as AssignmentIcon,
   MenuBook as MenuBookIcon, Settings as SettingsIcon, BarChart as BarChartIcon,
   SmartToy as AiIcon, Notifications as NotifIcon, Search as SearchIcon,
-  Menu as MenuIcon, RestartAlt as ResetIcon,
+  Menu as MenuIcon, RestartAlt as ResetIcon, LibraryBooks as LibraryIcon,
 } from '@mui/icons-material';
 import { useStore } from './app/store';
 import AIPanel from './components/AIPanel/AIPanel';
@@ -21,6 +21,7 @@ const navItems = [
   { label: 'Overview', icon: <DashboardIcon />, path: '/' },
   { label: 'Process Health', icon: <WarningIcon />, path: '/anomalies' },
   { label: 'Actions', icon: <AssignmentIcon />, path: '/actions' },
+  { label: 'Knowledge Library', icon: <LibraryIcon />, path: '/knowledge' },
   { label: 'Specs & Standards', icon: <MenuBookIcon />, path: '/specs' },
   { label: 'Scoreboard', icon: <BarChartIcon />, path: '/scoreboard' },
   { label: 'Settings', icon: <SettingsIcon />, path: '/settings' },

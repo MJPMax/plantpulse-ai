@@ -154,3 +154,65 @@ export interface AppNotification {
   title: string;
   read: boolean;
 }
+
+// ── Knowledge Library ──
+export type CauseType =
+  | 'Process Control'
+  | 'Operations'
+  | 'Maintenance'
+  | 'Raw Material'
+  | 'Equipment'
+  | 'Instrumentation';
+
+export type RecommendationType =
+  | 'Inspect'
+  | 'Adjust'
+  | 'Calibrate'
+  | 'Monitor'
+  | 'Repair'
+  | 'Replace'
+  | 'Clean'
+  | 'Control Loop Health check';
+
+export type DeviationDirection = 'High' | 'Low' | 'Oscillating';
+
+export type ImpactImportance =
+  | 'Critical - Major / Direct'
+  | 'High - Moderate / Direct'
+  | 'Medium - Minor / Indirect'
+  | 'Low - Negligible';
+
+export type KnowledgeFileStatus = 'Active' | 'Archived';
+
+export interface KnowledgeScenario {
+  id: string;
+  fileId: string;
+  plant: string;
+  area: string;
+  processType: string;
+  productivityMetric: string; // The metric being monitored
+  contributorDeviation: string; // Parameter causing deviation
+  deviationDirection: DeviationDirection;
+  impactImportance: ImpactImportance;
+  potentialCause: string; // Root cause description
+  causeType: CauseType;
+  followUpRecommendation: string; // Action steps
+  recommendationType: RecommendationType;
+  logicPath: string; // Hierarchical path (e.g., "Extraction > DT > Steam")
+  tags: string[];
+  metricId?: string; // Optional link to actual metric
+}
+
+export interface KnowledgeFile {
+  id: string;
+  facilityId: string;
+  fileName: string;
+  uploadedBy: string;
+  uploadedAt: number;
+  plant: string;
+  area: string;
+  notes: string;
+  scenarioCount: number;
+  scenarioIds: string[];
+  status: KnowledgeFileStatus;
+}

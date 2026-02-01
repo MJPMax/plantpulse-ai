@@ -168,6 +168,7 @@ export default function AnomalyDetail() {
         <Tab label="Evidence" />
         <Tab label="Actions" />
         <Tab label="Comments" />
+        <Tab label="Knowledge Base" />
         <Tab label="Resolution Log" />
         <Tab label="Audit" />
       </Tabs>
@@ -240,9 +241,67 @@ export default function AnomalyDetail() {
         </Box>
       )}
 
-      {tab === 3 && <ResolutionLogForm anomaly={anomaly} />}
+      {tab === 3 && (
+        <Box>
+          <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+            Relevant Knowledge Scenarios
+          </Typography>
+          {(() => {
+            const matchedScenarios = store.knowledgeScenarios
+              .filter((sc) => {
+                const file = store.knowledgeFiles.find((f) => f.id === sc.fileId);
+                return file && file.status === 'Active' && sc.area === anomaly.area;
+              })
+              .slice(0, 5);
 
-      {tab === 4 && <AuditTimeline events={anomaly.audit} />}
+            if (matchedScenarios.length === 0) {
+              return (
+                <Typography variant="body2" color="text.secondary">
+                  No matching scenarios found in knowledge library for {anomaly.area} area.
+                </Typography>
+              );
+            }
+
+            return (
+              <Stack spacing={1.5}>
+                {matchedScenarios.map((sc) => (
+                  <Card key={sc.id} variant="outlined">
+                    <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
+                      <Stack direction="row" spacing={1} sx={{ mb: 0.5 }}>
+                        <Chip
+                          label={sc.impactImportance.split(' - ')[0]}
+                          size="small"
+                          color={
+                            sc.impactImportance.startsWith('Critical') ? 'error' :
+                            sc.impactImportance.startsWith('High') ? 'warning' : 'default'
+                          }
+                          sx={{ fontSize: '0.65rem', height: 18 }}
+                        />
+                        <Chip label={sc.causeType} size="small" variant="outlined" sx={{ fontSize: '0.65rem', height: 18 }} />
+                      </Stack>
+                      <Typography variant="subtitle2" sx={{ mb: 0.5, fontSize: '0.85rem' }}>
+                        {sc.productivityMetric} → {sc.contributorDeviation} ({sc.deviationDirection})
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.78rem' }}>
+                        <strong>Potential Cause:</strong> {sc.potentialCause}
+                      </Typography>
+                      <Box sx={{ bgcolor: '#F5F3F0', p: 1.5, borderRadius: 1, border: '1px solid #E8E6E3' }}>
+                        <Typography variant="body2" sx={{ fontSize: '0.78rem' }}>
+                          <strong>Recommendation:</strong> {sc.followUpRecommendation}
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Stack>
+            );
+          })()}
+        </Box>
+      )}
+
+      {tab === 4 && <ResolutionLogForm anomaly={anomaly} />}
+
+      {tab === 5 && <AuditTimeline events={anomaly.audit} />}
 
       {/* Dialogs */}
       <ConfirmAnomalyDialog open={confirmOpen} onClose={() => setConfirmOpen(false)} anomaly={anomaly} />

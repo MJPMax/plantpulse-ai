@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import type {
   Facility, User, Metric, Anomaly, Action, TimeRangePreset,
   AnomalyStatus, ActionStatus, ResolutionLog, AppNotification,
+  KnowledgeFile, KnowledgeScenario,
 } from './types';
 import {
   facilities as defFacilities,
@@ -11,6 +12,8 @@ import {
   anomalies as defAnomalies,
   actions as defActions,
   notifications as defNotifications,
+  knowledgeFiles as defKnowledgeFiles,
+  knowledgeScenarios as defKnowledgeScenarios,
 } from './mockData';
 import { uid, confirmationsNeeded } from './utils';
 
@@ -30,6 +33,8 @@ interface StoreState {
   actions: Action[];
   notifications: AppNotification[];
   chatMessages: ChatMessage[];
+  knowledgeFiles: KnowledgeFile[];
+  knowledgeScenarios: KnowledgeScenario[];
 
   // UI state
   currentFacilityId: string;
@@ -61,6 +66,12 @@ interface StoreState {
   addChatMessage: (msg: Omit<ChatMessage, 'id' | 'ts'>) => void;
   clearChat: () => void;
 
+  // Knowledge Library
+  uploadKnowledgeFile: (fields: Omit<KnowledgeFile, 'id' | 'uploadedAt' | 'scenarioCount' | 'scenarioIds'>, scenarioCount: number) => string;
+  archiveKnowledgeFile: (fileId: string) => void;
+  deleteKnowledgeFile: (fileId: string) => void;
+  searchScenarios: (query: string, filters?: { area?: string; causeType?: string; metricId?: string }) => KnowledgeScenario[];
+
   // Reset
   resetDemoData: () => void;
 }
@@ -79,6 +90,8 @@ export const useStore = create<StoreState>()(
       actions: defActions,
       notifications: defNotifications,
       chatMessages: [],
+      knowledgeFiles: defKnowledgeFiles,
+      knowledgeScenarios: defKnowledgeScenarios,
 
       currentFacilityId: 'fac-1',
       currentUserId: 'u-1',
@@ -180,6 +193,92 @@ export const useStore = create<StoreState>()(
       })),
       clearChat: () => set({ chatMessages: [] }),
 
+      // Knowledge Library methods
+      uploadKnowledgeFile: (fields, scenarioCount) => {
+        const s = get();
+        const id = `kf-${uid()}`;
+        const scenarioIds: string[] = [];
+        const scenarios: KnowledgeScenario[] = [];
+
+        // Template pools for scenario generation
+        const metrics = ['Daily Throughput', 'White Flake Fat', 'Hexane Loss', 'Steam Consumption', 'Extraction Efficiency', 'Meal Residual Oil'];
+        const contributors = ['Temperature', 'Pressure', 'Flow Rate', 'Steam Supply', 'Control Loop', 'Equipment Condition'];
+        const causes = ['Control valve malfunction', 'Sensor drift', 'Equipment wear', 'Steam supply issue', 'Process parameter deviation', 'Maintenance required'];
+        const recommendations = ['Inspect equipment and verify operation', 'Check control loop performance', 'Calibrate sensors and instruments', 'Adjust process parameters', 'Monitor performance and trend data'];
+
+        // Generate mock scenarios based on metadata
+        for (let i = 0; i < scenarioCount; i++) {
+          const scenarioId = `ks-${uid()}`;
+          scenarioIds.push(scenarioId);
+
+          scenarios.push({
+            id: scenarioId,
+            fileId: id,
+            plant: fields.plant,
+            area: fields.area,
+            processType: fields.area === 'Extraction' ? 'Solvent Extraction' : fields.area === 'Preparation' ? 'Conditioning' : 'Steam Generation',
+            productivityMetric: metrics[Math.floor(Math.random() * metrics.length)],
+            contributorDeviation: contributors[Math.floor(Math.random() * contributors.length)],
+            deviationDirection: Math.random() > 0.5 ? 'High' : 'Low',
+            impactImportance: ['Critical - Major / Direct', 'High - Moderate / Direct', 'Medium - Minor / Indirect', 'Low - Negligible'][Math.floor(Math.random() * 4)] as any,
+            potentialCause: causes[Math.floor(Math.random() * causes.length)],
+            causeType: ['Process Control', 'Operations', 'Maintenance', 'Equipment'][Math.floor(Math.random() * 4)] as any,
+            followUpRecommendation: recommendations[Math.floor(Math.random() * recommendations.length)],
+            recommendationType: ['Inspect', 'Adjust', 'Monitor', 'Calibrate'][Math.floor(Math.random() * 4)] as any,
+            logicPath: `${fields.area} > Simulated > Scenario ${i + 1}`,
+            tags: [fields.area.toLowerCase(), 'simulated', 'auto-generated'],
+          });
+        }
+
+        const newFile: KnowledgeFile = {
+          ...fields,
+          id,
+          uploadedAt: Date.now(),
+          scenarioCount,
+          scenarioIds,
+        };
+
+        set({
+          knowledgeFiles: [...s.knowledgeFiles, newFile],
+          knowledgeScenarios: [...s.knowledgeScenarios, ...scenarios],
+        });
+
+        return id;
+      },
+
+      archiveKnowledgeFile: (fileId) => set((s) => ({
+        knowledgeFiles: s.knowledgeFiles.map((f) => f.id === fileId ? { ...f, status: 'Archived' as const } : f),
+      })),
+
+      deleteKnowledgeFile: (fileId) => set((s) => ({
+        knowledgeFiles: s.knowledgeFiles.filter((f) => f.id !== fileId),
+        knowledgeScenarios: s.knowledgeScenarios.filter((sc) => sc.fileId !== fileId),
+      })),
+
+      searchScenarios: (query, filters) => {
+        const s = get();
+        let results = s.knowledgeScenarios.filter((sc) => {
+          const file = s.knowledgeFiles.find((f) => f.id === sc.fileId);
+          return file && file.status === 'Active';
+        });
+
+        if (filters?.area) results = results.filter((sc) => sc.area === filters.area);
+        if (filters?.causeType) results = results.filter((sc) => sc.causeType === filters.causeType);
+        if (filters?.metricId) results = results.filter((sc) => sc.metricId === filters.metricId);
+
+        if (query.trim()) {
+          const q = query.toLowerCase();
+          results = results.filter((sc) =>
+            sc.productivityMetric.toLowerCase().includes(q) ||
+            sc.contributorDeviation.toLowerCase().includes(q) ||
+            sc.potentialCause.toLowerCase().includes(q) ||
+            sc.followUpRecommendation.toLowerCase().includes(q)
+          );
+        }
+
+        return results;
+      },
+
       resetDemoData: () => {
         localStorage.removeItem('plant-monitor-store');
         set({
@@ -190,6 +289,8 @@ export const useStore = create<StoreState>()(
           actions: defActions,
           notifications: defNotifications,
           chatMessages: [],
+          knowledgeFiles: defKnowledgeFiles,
+          knowledgeScenarios: defKnowledgeScenarios,
           currentFacilityId: 'fac-1',
           currentUserId: 'u-1',
           timeRange: '24h',

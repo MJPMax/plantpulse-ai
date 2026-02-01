@@ -16,7 +16,10 @@ const CANNED_RESPONSES: Record<string, string> = {
   'draft comment': `Suggested comment:\n\n"Throughput decline correlates with elevated press vibration detected at 06:15. Hexane loss trend suggests possible solvent system back-pressure. Recommend bearing inspection and feed rate controller check."`,
   'assign actions': `I recommend the following actions:\n1. **Inspect** Main Press bearings → Maintenance (High priority)\n2. **Calibrate** feed rate controller → Instrumentation (High priority)\n3. **Inspect** solvent return line pressure → Operations (Medium priority)`,
   'generate resolution': `**Resolution Summary Draft:**\n\nRoot Cause: Equipment — Main Press bearing wear caused throughput reduction.\nCorrective Actions: Replaced bearings on press shaft, recalibrated feed rate controller.\nPreventive Actions: Added press bearings to monthly inspection schedule.\nVerification: Throughput metric stable above 48 T/h for 8 hours post-repair.`,
-  default: `I've analyzed the current plant data. Here are my observations:\n\n• 3 active anomalies requiring attention\n• Throughput and extraction efficiency are below target\n• Steam consumption trending upward\n\nWould you like me to drill into any specific area?`,
+  'find knowledge': `**Knowledge Base Diagnostics**\n\nSearching knowledge library for relevant scenarios...\n\n**Top Matches:**\n\n1. **White Flake Fat elevation** (Confidence: 0.92)\n   • Contributor: DT Dome Temperature Low\n   • Cause: Insufficient steam supply to DT dome\n   • Action: Inspect steam header pressure (8-10 bar), check DT control valve\n\n2. **Throughput reduction** (Confidence: 0.87)\n   • Contributor: Solvent Ratio deviation\n   • Cause: Hexane flow control loop issue\n   • Action: Verify control loop in auto, calibrate flow transmitter\n\n3. **Extraction efficiency drop** (Confidence: 0.84)\n   • Contributor: Extractor Pressure positive\n   • Cause: Final vent system blockage\n   • Action: Inspect extraction vent seals and fan performance\n\nRecommendation: Review full scenarios in Knowledge Library for detailed troubleshooting steps.`,
+  'related scenarios': `**Related Knowledge Scenarios**\n\nBased on current anomaly context (Extraction area):\n\n• **DT Temperature Control Issues** — 4 scenarios\n• **Steam Supply Problems** — 3 scenarios\n• **Solvent System Diagnostics** — 3 scenarios\n• **Extraction Pressure & Venting** — 2 scenarios\n\n**Total Knowledge Base**: 20 scenarios across 3 files\n\nSuggestion: Navigate to Knowledge Library to explore specific scenarios and diagnostic recommendations.`,
+  'knowledge stats': `**Knowledge Library Status**\n\n• Total Files: 3 active knowledge bases\n• Total Scenarios: 20 diagnostic scenarios\n• Coverage:\n  - Extraction: 12 scenarios\n  - Preparation: 6 scenarios\n  - Utilities: 4 scenarios\n• Last Upload: 7 days ago (Utilities_Troubleshooting_Guide.xlsx)\n\nRecommendation: Knowledge base covers major extraction and utilities issues. Consider uploading preparation-specific diagnostics for improved coverage.`,
+  default: `I've analyzed the current plant data. Here are my observations:\n\n• 3 active anomalies requiring attention\n• Throughput and extraction efficiency are below target\n• Steam consumption trending upward\n\nWould you like me to drill into any specific area or search the knowledge base for relevant diagnostics?`,
 };
 
 const SAMPLE_UTTERANCES = [
@@ -101,10 +104,10 @@ export default function AIPanel() {
 
   const suggestedPrompts = [
     { label: 'Daily briefing', key: 'daily briefing' },
-    { label: 'Explain drivers', key: 'explain drivers' },
-    { label: 'Draft comment', key: 'draft comment' },
+    { label: 'Find Knowledge', key: 'find knowledge' },
+    { label: 'Related Scenarios', key: 'related scenarios' },
     { label: 'Assign actions', key: 'assign actions' },
-    { label: 'Resolution summary', key: 'generate resolution' },
+    { label: 'Knowledge Stats', key: 'knowledge stats' },
   ];
 
   return (
